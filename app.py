@@ -17,6 +17,11 @@ NEIGHBORHOODS = ['Blmngtn', 'Blueste', 'BrDale', 'BrkSide', 'ClearCr', 'CollgCr'
 def load_model():
     return pickle.load(open(BASE / "house_model.pkl", "rb"))
 
+
+@st.cache_resource
+def load_meta():
+    return pickle.load(open(BASE / "house_meta.pkl", "rb"))
+
 model = load_model()
 meta = load_meta()
 feature_cols, defaults = meta["feature_cols"], meta["defaults"]
