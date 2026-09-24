@@ -71,8 +71,8 @@ if st.button("Estimate price"):
         "CentralAir": "Y" if central_air == "Yes" else "N",
     })
 
-    X = pd.get_dummies(pd.DataFrame([row]))
-    X = X.reindex(columns=feature_cols, fill_value=0)
+    x = pd.get_dummies(pd.DataFrame([row]))
+    x = x.reindex(columns=feature_cols, fill_value=0)
 
     pred_log = model.predict(X)[0]
     pred = float(np.expm1(pred_log))
