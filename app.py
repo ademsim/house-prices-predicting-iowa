@@ -22,9 +22,11 @@ def load_model():
 def load_meta():
     return pickle.load(open(BASE / "house_meta.pkl", "rb"))
 
+
 model = load_model()
 meta = load_meta()
-feature_cols, defaults = meta["feature_cols"], meta["defaults"]
+feature_cols = list(dict.fromkeys(meta["feature_cols"]))  # drop any duplicate column names, keep order
+defaults = meta["defaults"]
 
 st.title("House Price Estimator")
 st.write(
@@ -71,8 +73,9 @@ if st.button("Estimate price"):
         "CentralAir": "Y" if central_air == "Yes" else "N",
     })
 
-    x = pd.get_dummies(pd.DataFrame([row]))
-    x = x.reindex(columns=feature_cols, fill_value=0)
+    X = pd.get_dummies(pd.DataFrame([row]))
+    X = X.loc[:, ~X.columns.duplicated()]  # defensive: drop any duplicate column names here too
+    X = X.reindex(columns=feature_cols, fill_value=0)
 
     pred_log = model.predict(X)[0]
     pred = float(np.expm1(pred_log))
